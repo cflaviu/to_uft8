@@ -5,7 +5,10 @@ CppApplication {
     cpp.cxxLanguageVersion: "c++17"
     cpp.includePaths: [
         "inc",
-        "inc_ext",
+    ]
+    cpp.staticLibraries: [
+        "/usr/local/lib/libCatch2Main.a",
+        "/usr/local/lib/libCatch2.a",
     ]
     files: [
         "inc/to_utf8/from_utf16.hpp",
