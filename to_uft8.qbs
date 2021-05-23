@@ -2,6 +2,7 @@ import qbs
 
 CppApplication {
     consoleApplication: true
+    cpp.debugInformation: true
     cpp.cxxLanguageVersion: "c++17"
     cpp.includePaths: [
         "inc",
@@ -10,15 +11,23 @@ CppApplication {
         "/usr/local/lib/libCatch2Main.a",
         "/usr/local/lib/libCatch2.a",
     ]
-    files: [
-        "inc/to_utf8/from_utf16.hpp",
-        "inc/to_utf8/from_utf32.hpp",
-        "test/utf16.cpp",
-        "test/utf32.cpp",
-    ]
-
+    Group
+    {
+        name: "headers"
+        prefix: "inc/to_utf8/"
+        files: [
+            "from_utf16.hpp",
+            "from_utf32.hpp",
+        ]
+        qbs.installDir:  "include/to_utf8"
+        qbs.install:  true
+    }
     Group {
-        fileTagsFilter: "application"
+        name: "test"
+        files: [
+            "test/utf16.cpp",
+            "test/utf32.cpp",
+        ]
         qbs.install: false
     }
 }
