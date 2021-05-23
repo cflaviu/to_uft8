@@ -22,39 +22,20 @@ namespace to_utf8
             }
             case 1: // 2 bytes
             {
-                const auto trunc2 = code_point % 64u;
                 const auto trunc1 = code_point >> 6u;
-                uint8_t c1 = 192u, c2 = 128u;
-                for (auto i = 6u, and_op = 1u; i != 0u; --i, and_op <<= 1)
-                {
-                    c2 |= trunc2 & and_op;
-                    c1 |= trunc1 & and_op;
-                }
-
-                *dest++ = c1;
-                *dest++ = c2;
+                const auto trunc2 = code_point % 64u;
+                *dest++ = 192u | (trunc1 & 0b111111);
+                *dest++ = 128u | (trunc2 & 0b111111);
                 break;
             }
             case 2: // 3 bytes
             {
-                const auto trunc3 = code_point % 64u;
-                const auto trunc2 = code_point >> 6u;
                 const auto trunc1 = code_point >> 12u;
-                uint8_t c1 = 224u, c2 = 128u, c3 = 128u;
-                for (auto i = 6u, and_op = 1u; i != 0u; --i, and_op <<= 1)
-                {
-                    c3 |= trunc3 & and_op;
-                    c2 |= trunc2 & and_op;
-                }
-
-                for (auto i = 4u, and_op = 1u; i != 0u; --i, and_op <<= 1)
-                {
-                    c1 |= trunc1 & and_op;
-                }
-
-                *dest++ = c1;
-                *dest++ = c2;
-                *dest++ = c3;
+                const auto trunc2 = code_point >> 6u;
+                const auto trunc3 = code_point % 64u;
+                *dest++ = 224u | (trunc1 & 0b1111);
+                *dest++ = 128u | (trunc2 & 0b111111);
+                *dest++ = 128u | (trunc3 & 0b111111);
                 break;
             }
             default:;

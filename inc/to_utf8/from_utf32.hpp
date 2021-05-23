@@ -34,37 +34,18 @@ namespace to_utf8
             {
                 const auto trunc1 = code_point >> 6u;
                 const auto trunc2 = code_point % 64u;
-                uint8_t c1 = 192u, c2 = 128u;
-                for (auto i = 6u, and_op = 1u; i != 0u; --i, and_op <<= 1)
-                {
-                    c1 |= trunc1 & and_op;
-                    c2 |= trunc2 & and_op;
-                }
-
-                *dest++ = c1;
-                *dest++ = c2;
+                *dest++ = 192u | (trunc1 & 0b111111);
+                *dest++ = 128u | (trunc2 & 0b111111);
                 break;
             }
             case 2: // 3 bytes
             {
-                const auto trunc3 = code_point % 64u;
-                const auto trunc2 = code_point >> 6u;
                 const auto trunc1 = code_point >> 12u;
-                uint8_t c1 = 224u, c2 = 128u, c3 = 128u;
-                for (auto i = 6u, and_op = 1u; i != 0u; --i, and_op <<= 1)
-                {
-                    c3 |= trunc3 & and_op;
-                    c2 |= trunc2 & and_op;
-                }
-
-                for (auto i = 4u, and_op = 1u; i != 0u; --i, and_op <<= 1)
-                {
-                    c1 |= trunc1 & and_op;
-                }
-
-                *dest++ = c1;
-                *dest++ = c2;
-                *dest++ = c3;
+                const auto trunc2 = code_point >> 6u;
+                const auto trunc3 = code_point % 64u;
+                *dest++ = 224u | (trunc1 & 0b1111);
+                *dest++ = 128u | (trunc2 & 0b111111);
+                *dest++ = 128u | (trunc3 & 0b111111);
                 break;
             }
             case 3: // 4 bytes
@@ -73,23 +54,10 @@ namespace to_utf8
                 const auto trunc3 = code_point >> 6u;
                 const auto trunc2 = code_point >> 12u;
                 const auto trunc1 = code_point >> 18u;
-                uint8_t c1 = 240u, c2 = 128u, c3 = 128u, c4 = 128u;
-                for (auto i = 6u, and_op = 1u; i != 0u; --i, and_op <<= 1)
-                {
-                    c4 |= trunc4 & and_op;
-                    c3 |= trunc3 & and_op;
-                    c2 |= trunc2 & and_op;
-                }
-
-                for (auto i = 4u, and_op = 1u; i != 0u; --i, and_op <<= 1)
-                {
-                    c1 |= trunc1 & and_op;
-                }
-
-                *dest++ = c1;
-                *dest++ = c2;
-                *dest++ = c3;
-                *dest++ = c4;
+                *dest++ = 240u | (trunc1 & 0b1111);
+                *dest++ = 128u | (trunc2 & 0b111111);
+                *dest++ = 128u | (trunc3 & 0b111111);
+                *dest++ = 128u | (trunc4 & 0b111111);
                 break;
             }
             default:;
