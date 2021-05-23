@@ -2,7 +2,6 @@
 // Distributed under MIT License
 #pragma once
 #ifndef PCH
-    #include <algorithm>
     #include <cstdint>
 #endif
 
@@ -14,15 +13,7 @@ namespace to_utf8
     template <typename T>
     T from_utf32(const char32_t code_point, T dest) noexcept
     {
-        static constexpr std::array<uint32_t, 7> ranges {
-            0x7F,      // 127
-            0x7FF,     // 2047
-            0xFFFF,    // 65535
-            0x1FFFFF,  // 2097151
-            0x3FFFFFF, // 67108863
-        };
-
-        auto index = std::distance(ranges.begin(), std::lower_bound(ranges.begin(), ranges.end(), code_point));
+        auto index = code_point < 0x7FF ? (code_point < 0x7F ? 0u : 1u) : (code_point < 0xFFFF ? 2u : code_point < 0x1FFFFF ? 3u : 4u);
         switch (index)
         {
             case 0: // 1 byte
